@@ -1,24 +1,24 @@
-#include "leds.h"
+#include "dispense_leds.h"
 
-LEDs::LEDs(int pin, int numPixels)
-  : strip(numPixels, pin, NEO_GRB + NEO_KHZ800), maxLedsOn(numPixels) {}
+DispenseLeds::DispenseLeds(int pin, int numPixels)
+  : strip(numPixels, pin, NEO_GRB + NEO_KHZ800), maxDispenseLedsOn(numPixels) {}
 
-void LEDs::begin() {
+void DispenseLeds::begin() {
   strip.begin();
   strip.show();  // Initialize all pixels to 'off'
 }
 
-void LEDs::setLedsOn(int numLeds) {
-  if (numLeds > strip.numPixels()) {
-    maxLedsOn = strip.numPixels();
+void DispenseLeds::setDispenseLedsOn(int numDispenseLeds) {
+  if (numDispenseLeds > strip.numPixels()) {
+    maxDispenseLedsOn = strip.numPixels();
   } else {
-    maxLedsOn = numLeds;
+    maxDispenseLedsOn = numDispenseLeds;
   }
 }
 
-void LEDs::setLedColor(uint32_t color) {
+void DispenseLeds::setLedColor(uint32_t color) {
   for (int i = 0; i < strip.numPixels(); i++) {
-    if (i < maxLedsOn) {
+    if (i < maxDispenseLedsOn) {
       strip.setPixelColor(i, color);
     } else {
       strip.setPixelColor(i, 0);  // Turn off the LED
@@ -27,21 +27,21 @@ void LEDs::setLedColor(uint32_t color) {
   strip.show();
 }
 
-void LEDs::turnOff() {
+void DispenseLeds::turnOff() {
     for (int i = 0; i < strip.numPixels(); i++) {
         strip.setPixelColor(i, 0);  // Set each LED to 'off'
     }
-    strip.show();  // Update the strip to turn off all LEDs
+    strip.show();  // Update the strip to turn off all DispenseLeds
 }
 
-void LEDs::setDispensing(unsigned long interval) {
+void DispenseLeds::setDispensing(unsigned long interval) {
   unsigned long currentMillis = millis();
   uint32_t purple = strip.Color(128, 0, 128);  // Define the purple color
 
   if (currentMillis - previousMillis >= interval) {
       previousMillis = currentMillis;
 
-      // Shift all the LEDs one position forward
+      // Shift all the DispenseLeds one position forward
       for (int i = strip.numPixels() - 1; i > 0; i--) {
           strip.setPixelColor(i, strip.getPixelColor(i - 1));
       }
@@ -52,7 +52,7 @@ void LEDs::setDispensing(unsigned long interval) {
       // Update the LED strip to show the changes
       strip.show();
 
-      // Increment the position, and reset if it exceeds the number of LEDs
+      // Increment the position, and reset if it exceeds the number of DispenseLeds
       currentPosition++;
       if (currentPosition >= strip.numPixels()) {
           currentPosition = 0;

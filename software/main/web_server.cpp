@@ -1,19 +1,12 @@
 #include "web_server.h"
-#include "led_control.h"
 #include <WiFi.h>
 
-// Define the number of LEDs and the pin they are connected to
-#define LED_PIN    25
-#define NUM_LEDS   90
-
-LEDControl ledControl(NUM_LEDS, LED_PIN);
-
-WebServerHandler::WebServerHandler() : server(80) {}
+WebServerHandler::WebServerHandler(CartLeds& cartLeds) : server_(80), cartLeds_(cartLeds) {}
 
 void WebServerHandler::begin() {
     registerRoutes();
-    server.begin();
-    ledControl.begin();
+    server_.begin();
+    cartLeds_.begin();
 }
 
 
@@ -22,23 +15,23 @@ void WebServerHandler::startAP(const char* ssid, const char* password) {
     IPAddress IP = WiFi.softAPIP();
     Serial.print("AP IP address: ");
     Serial.println(IP);
-    ledControl.setBrightness(255);
+    cartLeds_.setBrightness(255);
 
-    begin();  // Start the web server
+    begin();  // Start the web server_
 }
 
 void WebServerHandler::registerRoutes() {
-    server.on("/config1", HTTP_GET, [](AsyncWebServerRequest *request){
-        ledControl.setEnglandFlagConfig();
+    server_.on("/config1", HTTP_GET, [this](AsyncWebServerRequest *request){
+        cartLeds_.setEnglandFlagConfig();
         request->send(200, "text/plain", "Bandera inglaterra god");
     });
 
-    server.on("/config2", HTTP_GET, [](AsyncWebServerRequest *request){
-        ledControl.setPixelColor(0, ledControl.Color(255, 0, 0));
+    server_.on("/config2", HTTP_GET, [this](AsyncWebServerRequest *request){
+        cartLeds_.setPixelColor(0, cartLeds_.Color(255, 0, 0));
         request->send(200, "text/plain", "Loaded Configuration 2");
     });
 
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    server_.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
         String html = "<html><body><h1>LED Control</h1><button onclick=\"location.href='/config1'\">Bandera Inglaterra</button>";
         html += "<button onclick=\"location.href='/config2'\">Config 2</button></body></html>";
         request->send(200, "text/html", html);

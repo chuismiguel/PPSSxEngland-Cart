@@ -1,11 +1,11 @@
-#ifndef LEDCONTROL_H
-#define LEDCONTROL_H
+#ifndef CartLeds_H
+#define CartLeds_H
 
 #include <Adafruit_NeoPixel.h>
 
-class LEDControl {
+class CartLeds {
 public:
-    LEDControl(uint16_t numPixels, uint8_t pin, neoPixelType type = NEO_GRB + NEO_KHZ800);
+    CartLeds(uint16_t numPixels, uint8_t pin, neoPixelType type = NEO_GRB + NEO_KHZ800);
 
     void begin();
     void setPixelColor(uint16_t n, uint32_t color);

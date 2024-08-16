@@ -1,20 +1,20 @@
-#ifndef LEDS_H
-#define LEDS_H
+#ifndef DispenseLeds_H
+#define DispenseLeds_H
 
 #include <Adafruit_NeoPixel.h>
 
-class LEDs {
+class DispenseLeds {
   public:
-    LEDs(int pin, int numPixels);
+    DispenseLeds(int pin, int numPixels);
     void begin();
-    void setLedsOn(int numLeds);
+    void setDispenseLedsOn(int numDispenseLeds);
     void setLedColor(uint32_t color);
-    void turnOff();  // Function to turn off all LEDs
+    void turnOff();  // Function to turn off all DispenseLeds
     void setDispensing(unsigned long interval);
     Adafruit_NeoPixel strip;
     
   private:
-    int maxLedsOn;
+    int maxDispenseLedsOn;
     unsigned long previousMillis;
     int currentPosition;
 };
