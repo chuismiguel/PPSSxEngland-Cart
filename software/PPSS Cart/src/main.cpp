@@ -55,8 +55,10 @@ void loop() {
   int buttonState = digitalRead(water_control::buttonPin);
   if (buttonState == LOW) {  // Button is pressed (assuming active LOW)
     dispenseLeds.turnOff();
+    cartLeds.setSectionStatus(CartSectionName::balcony, SectionStatus::fade);
   } else {  // Button is not pressed
     dispenseLeds.setDispenseLedsOn(8);
+    cartLeds.setSectionStatus(CartSectionName::balcony, SectionStatus::dispensing);
     dispenseLeds.setDispensing(50);  // Green color
   }
 }

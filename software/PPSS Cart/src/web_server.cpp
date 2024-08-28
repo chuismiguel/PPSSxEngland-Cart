@@ -22,7 +22,6 @@ void WebServerHandler::startAP(const char* ssid, const char* password) {
 
 void WebServerHandler::registerRoutes() {
     server_.on("/config1", HTTP_GET, [this](AsyncWebServerRequest *request){
-        cartLeds_.setEnglandFlagConfig();
         request->send(200, "text/plain", "Bandera inglaterra god");
     });
 
