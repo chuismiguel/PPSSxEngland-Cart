@@ -23,12 +23,8 @@ enum SectionStatus {
   off
 };
 
-CartLedSection leftSideStripSections  = {{0, 11}, {66, 90}};
-CartLedSection rightSideStripSections  = {{19, 53}};
-CartLedSection balconyStripSections  = {{54, 65}};
-CartLedSection frontStripSections  = {{12, 18}};
-
 class CartSectionHandler {
+  static constexpr int balconyOnTime = 20;
   public:
     CartSectionHandler(const CartLedSection& section, Adafruit_NeoPixel* strip);
 
@@ -41,6 +37,9 @@ private:
   CartLedSection ledPixels_;
   Adafruit_NeoPixel* strip_;
   SectionStatus status_;
+  unsigned long balconyPrevTickMillis_;
+  unsigned long currentBalconyLedOn_;
+  std::vector<unsigned long> fadePrevTickMillis_;
   uint32_t fixedColor_;
 
 };
@@ -67,8 +66,7 @@ private:
     CartSectionHandler leftSideHandler_;
     CartSectionHandler rightSideHandler_;
     CartSectionHandler bottomSideHandler_;
-    CartSectionHandler balconyHandler_;
-    
+    CartSectionHandler balconyHandler_;    
 };
 
 #endif

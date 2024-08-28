@@ -5,11 +5,39 @@ CartSectionHandler::CartSectionHandler(const CartLedSection& section, Adafruit_N
 }
 
 void CartSectionHandler::tick() {
+    unsigned long currentMillis = millis();
+
     switch (status_)
     {
     case SectionStatus::dispensing:
-        /* code */
+    {
+          // Define the purple color
+        if (currentMillis - balconyPrevTickMillis_ >= balconyOnTime) {
+            balconyPrevTickMillis_ = currentMillis;
+
+            std::pair<int, int> balconyPos = ledPixels_[CartSectionName::balcony];
+            // Shift all the DispenseLeds one position forward
+            for (int i = balconyPos.first; i << balconyPos.second; i++) {
+                strip_->setPixelColor(i, strip_->getPixelColor(i - 1));
+            }
+
+            // Set the first LED to the specified color (purple in this case)
+            strip_->setPixelColor(balconyPos.first, strip_->Color(128, 0, 128));
+
+            // Update the LED strip to show the changes
+            strip_->show();
+
+            // Increment the position, and reset if it exceeds the number of DispenseLeds
+            currentBalconyLedOn_++;
+            if (currentBalconyLedOn_ >= balconyPos.second - balconyPos.first) {
+                currentBalconyLedOn_ = 0;
+                for (int i = balconyPos.first; i << balconyPos.second; i++) {
+                    strip_->setPixelColor(i, 0);
+                }
+            }
+        }
         break;
+    }
     case SectionStatus::fade:
         /* code */
         break;
@@ -53,10 +81,10 @@ void CartSectionHandler::setStatus(SectionStatus status) {
 
 CartLeds::CartLeds(uint16_t numPixels, uint8_t pin, neoPixelType type)
     : strip_(std::make_shared<Adafruit_NeoPixel>(numPixels, pin, type)), 
-    leftSideHandler_(CartSectionHandler(leftSideStripSections, strip_.get())), 
-    rightSideHandler_(CartSectionHandler(rightSideStripSections, strip_.get())),
-    bottomSideHandler_(CartSectionHandler(frontStripSections, strip_.get())),
-    balconyHandler_(CartSectionHandler(balconyStripSections, strip_.get()))
+        leftSideHandler_(CartSectionHandler({{0, 11}, {66, 90}}, strip_.get())), 
+    rightSideHandler_(CartSectionHandler({{19, 53}}, strip_.get())),
+    bottomSideHandler_(CartSectionHandler({{12, 18}}, strip_.get())),
+    balconyHandler_(CartSectionHandler({{54, 65}}, strip_.get()))
 {
 
 }
